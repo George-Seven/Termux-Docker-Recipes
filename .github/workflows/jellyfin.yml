@@ -1,0 +1,144 @@
+name: Build Multi-arch Jellyfin Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Jellyfin (amd64)
+        run: |
+          set -e
+          sudo apt install -y python3-git python3-yaml
+          git clone https://github.com/jellyfin/jellyfin-packaging
+          cd jellyfin-packaging
+          git submodule update --init
+          ./checkout.py v10.10.7
+          echo '
+          --- a/Emby.Server.Implementations/ConfigurationOptions.cs
+          +++ b/Emby.Server.Implementations/ConfigurationOptions.cs
+          @@ -24 +24 @@ namespace Emby.Server.Implementations
+          -            { DetectNetworkChangeKey, bool.TrueString }
+          +            { DetectNetworkChangeKey, bool.FalseString }
+          --- a/Jellyfin.Server/StartupOptions.cs
+          +++ b/Jellyfin.Server/StartupOptions.cs
+          @@ -71 +71 @@ namespace Jellyfin.Server
+          -        /// Gets or sets a value indicating whether the server should not detect network status change.
+          +        /// Gets or sets a value indicating whether the server should detect network status change.
+          @@ -73,2 +73,2 @@ namespace Jellyfin.Server
+          -        [Option("nonetchange", Required = false, HelpText = "Indicates that the server should not detect network status change.")]
+          -        public bool NoDetectNetworkChange { get; set; }
+          +        [Option("netchange", Required = false, HelpText = "Indicates that the server should detect network status change.")]
+          +        public bool DetectNetworkChange { get; set; }
+          @@ -99 +99 @@ namespace Jellyfin.Server
+          -            if (NoDetectNetworkChange)
+          +            if (DetectNetworkChange)
+          @@ -101 +101 @@ namespace Jellyfin.Server
+          -                config.Add(DetectNetworkChangeKey, bool.FalseString);
+          +                config.Add(DetectNetworkChangeKey, bool.TrueString);
+          ' | patch -p1 -d jellyfin-server
+          ./build.py latest docker amd64 --local
+          docker tag jellyfin/jellyfin:latest-amd64 "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-amd64
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-amd64
+
+  build-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Jellyfin (arm64)
+        run: |
+          set -e
+          sudo apt install -y python3-git python3-yaml
+          git clone https://github.com/jellyfin/jellyfin-packaging
+          cd jellyfin-packaging
+          git submodule update --init
+          ./checkout.py v10.10.7
+          echo '
+          --- a/Emby.Server.Implementations/ConfigurationOptions.cs
+          +++ b/Emby.Server.Implementations/ConfigurationOptions.cs
+          @@ -24 +24 @@ namespace Emby.Server.Implementations
+          -            { DetectNetworkChangeKey, bool.TrueString }
+          +            { DetectNetworkChangeKey, bool.FalseString }
+          --- a/Jellyfin.Server/StartupOptions.cs
+          +++ b/Jellyfin.Server/StartupOptions.cs
+          @@ -71 +71 @@ namespace Jellyfin.Server
+          -        /// Gets or sets a value indicating whether the server should not detect network status change.
+          +        /// Gets or sets a value indicating whether the server should detect network status change.
+          @@ -73,2 +73,2 @@ namespace Jellyfin.Server
+          -        [Option("nonetchange", Required = false, HelpText = "Indicates that the server should not detect network status change.")]
+          -        public bool NoDetectNetworkChange { get; set; }
+          +        [Option("netchange", Required = false, HelpText = "Indicates that the server should detect network status change.")]
+          +        public bool DetectNetworkChange { get; set; }
+          @@ -99 +99 @@ namespace Jellyfin.Server
+          -            if (NoDetectNetworkChange)
+          +            if (DetectNetworkChange)
+          @@ -101 +101 @@ namespace Jellyfin.Server
+          -                config.Add(DetectNetworkChangeKey, bool.FalseString);
+          +                config.Add(DetectNetworkChangeKey, bool.TrueString);
+          ' | patch -p1 -d jellyfin-server
+          ./build.py latest docker arm64 --local
+          docker tag jellyfin/jellyfin:latest-arm64 "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-arm64
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-arm64
+
+  build-armhf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Jellyfin (armhf)
+        run: |
+          set -e
+          sudo apt install -y python3-git python3-yaml
+          git clone https://github.com/jellyfin/jellyfin-packaging
+          cd jellyfin-packaging
+          git submodule update --init
+          ./checkout.py v10.10.7
+          echo '
+          --- a/Emby.Server.Implementations/ConfigurationOptions.cs
+          +++ b/Emby.Server.Implementations/ConfigurationOptions.cs
+          @@ -24 +24 @@ namespace Emby.Server.Implementations
+          -            { DetectNetworkChangeKey, bool.TrueString }
+          +            { DetectNetworkChangeKey, bool.FalseString }
+          --- a/Jellyfin.Server/StartupOptions.cs
+          +++ b/Jellyfin.Server/StartupOptions.cs
+          @@ -71 +71 @@ namespace Jellyfin.Server
+          -        /// Gets or sets a value indicating whether the server should not detect network status change.
+          +        /// Gets or sets a value indicating whether the server should detect network status change.
+          @@ -73,2 +73,2 @@ namespace Jellyfin.Server
+          -        [Option("nonetchange", Required = false, HelpText = "Indicates that the server should not detect network status change.")]
+          -        public bool NoDetectNetworkChange { get; set; }
+          +        [Option("netchange", Required = false, HelpText = "Indicates that the server should detect network status change.")]
+          +        public bool DetectNetworkChange { get; set; }
+          @@ -99 +99 @@ namespace Jellyfin.Server
+          -            if (NoDetectNetworkChange)
+          +            if (DetectNetworkChange)
+          @@ -101 +101 @@ namespace Jellyfin.Server
+          -                config.Add(DetectNetworkChangeKey, bool.FalseString);
+          +                config.Add(DetectNetworkChangeKey, bool.TrueString);
+          ' | patch -p1 -d jellyfin-server
+          ./build.py latest docker armhf --local
+          docker tag jellyfin/jellyfin:latest-armhf "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-armhf
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-armhf
+
+  create-manifest:
+    needs: [build-amd64, build-arm64, build-armhf]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create and push manifest
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker manifest create "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest \
+              --amend "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-amd64 \
+              --amend "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-arm64 \
+              --amend "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest-armhf
+          docker manifest push "${{ secrets.DOCKERHUB_USERNAME }}"/jellyfin:latest
