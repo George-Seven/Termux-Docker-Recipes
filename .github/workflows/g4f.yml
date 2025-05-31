@@ -48,13 +48,13 @@ jobs:
            # Switch user
            USER $SEL_UID
           @@ -44,10 +44,16 @@
-           # Copy the project'\'' s requirements file into the container.
+           # Copy the project'\''s requirements file into the container.
            COPY requirements.txt $G4F_DIR
            
           +# Switch user
           +USER root
           +
-           # Upgrade pip for the latest features and install the project'\'' s Python dependencies.
+           # Upgrade pip for the latest features and install the project'\''s Python dependencies.
            RUN pip install --break-system-packages --upgrade pip \
              && pip install --break-system-packages -r requirements.txt
            
