@@ -22,17 +22,14 @@ jobs:
            
            ARG G4F_VERSION
            ENV G4F_VERSION $G4F_VERSION
-          @@ -16,9 +16,7 @@
-             ; fi
+          @@ -17,7 +17,6 @@
            
            # Install Python3, pip, remove OpenJDK 11, clean up
-          -RUN apt-get -qqy update \
+           RUN apt-get -qqy update \
           -  && apt-get -qqy upgrade \
-          -  && apt-get -qyy autoremove \
-          +RUN apt-get -qyy autoremove \
+             && apt-get -qyy autoremove \
              && apt-get -qqy install python3 python-is-python3 pip \
              && apt-get -qyy remove openjdk-11-jre-headless \
-             && apt-get -qyy autoremove \
           ' | patch -p1 docker/Dockerfile
           echo "ref_name=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || echo "detached")" >> $GITHUB_ENV
 
