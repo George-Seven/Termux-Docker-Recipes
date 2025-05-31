@@ -9,12 +9,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          repository: xtekky/gpt4free
+          path: gpt4free
 
       - name: Setup G4F
         run: |
-          set -e
-          git clone https://github.com/xtekky/gpt4free
-          cd gpt4free
           echo '
           @@ -1,4 +1,4 @@
           -FROM selenium/node-chrome
@@ -24,7 +24,6 @@ jobs:
            ENV G4F_VERSION $G4F_VERSION
           ' | patch -p1 docker/Dockerfile
           echo "ref_name=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || echo "detached")" >> $GITHUB_ENV
-          echo "dockerfile_path=$(pwd)/docker/Dockerfile" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -42,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ${{ env.dockerfile_path }}
+          file: docker/Dockerfile
           platforms: linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/g4f:latest
