@@ -22,7 +22,7 @@ jobs:
            
            ARG G4F_VERSION
            ENV G4F_VERSION $G4F_VERSION
-          @@ -17,11 +17,9 @@
+          @@ -17,12 +17,12 @@
            
            # Install Python3, pip, remove OpenJDK 11, clean up
            RUN apt-get -qqy update \
@@ -33,9 +33,12 @@ jobs:
              && apt-get -qyy autoremove \
           +  && apt-get -qqy install python3 python-is-python3 pip \  
              && apt-get -qyy clean \
+          +  && python3 -m ensurepip --upgrade \
+          +  && python3 -m pip install --no-cache-dir --upgrade pip setuptools \
              && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
            
-          @@ -33,7 +31,7 @@
+           # Update entrypoint
+          @@ -33,7 +33,7 @@
            COPY docker/background.png /usr/share/images/fluxbox/ubuntu-light.png
            
            # Add user, fix permissions
