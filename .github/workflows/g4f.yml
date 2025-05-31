@@ -22,7 +22,7 @@ jobs:
            
            ARG G4F_VERSION
            ENV G4F_VERSION $G4F_VERSION
-          ' | patch -p1 doc/Dockerfile
+          ' | patch -p1 docker/Dockerfile
           echo "ref_name=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || echo "detached")" >> $GITHUB_ENV
 
       - name: Set up QEMU
