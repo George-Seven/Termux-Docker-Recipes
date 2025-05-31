@@ -24,6 +24,7 @@ jobs:
            ENV G4F_VERSION $G4F_VERSION
           ' | patch -p1 docker/Dockerfile
           echo "ref_name=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || echo "detached")" >> $GITHUB_ENV
+          echo "dockerfile_path=$(pwd)/docker/Dockerfile" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -41,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/Dockerfile
+          file: ${{ env.dockerfile_path }}
           platforms: linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/g4f:latest
