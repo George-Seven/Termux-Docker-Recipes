@@ -47,6 +47,22 @@ jobs:
            
            # Switch user
            USER $SEL_UID
+          @@ -44,10 +44,16 @@
+           # Copy the project'\'' s requirements file into the container.
+           COPY requirements.txt $G4F_DIR
+           
+          +# Switch user
+          +USER root
+          +
+           # Upgrade pip for the latest features and install the project'\'' s Python dependencies.
+           RUN pip install --break-system-packages --upgrade pip \
+             && pip install --break-system-packages -r requirements.txt
+           
+          +# Switch user
+          +USER $SEL_UID
+          +
+           # Copy the entire package into the container.
+           ADD --chown=$SEL_UID:$SEL_GID g4f $G4F_DIR/g4f
           ' | patch -p1 docker/Dockerfile
           echo "ref_name=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || echo "detached")" >> $GITHUB_ENV
 
