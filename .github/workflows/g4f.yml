@@ -33,7 +33,7 @@ jobs:
           +  && yes | apt-get -qqy upgrade \
              && apt-get -qyy autoremove \
              && apt-get -qqy install python3 python-is-python3 pip \
-          +  && apt install -y --no-install-recommends gcc libc6-dev patch \
+          +  && apt install -y --no-install-recommends gcc libc6-dev patch xterm \
              && apt-get -qyy remove openjdk-11-jre-headless \
              && apt-get -qyy autoremove \
              && apt-get -qyy clean \
