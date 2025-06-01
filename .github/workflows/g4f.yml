@@ -22,7 +22,7 @@ jobs:
            
            ARG G4F_VERSION
            ENV G4F_VERSION $G4F_VERSION
-          @@ -17,12 +17,19 @@
+          @@ -17,12 +17,20 @@
            
            # Install Python3, pip, remove OpenJDK 11, clean up
            RUN apt-get -qqy update \
@@ -33,6 +33,7 @@ jobs:
           +  && yes | apt-get -qqy upgrade \
              && apt-get -qyy autoremove \
              && apt-get -qqy install python3 python-is-python3 pip \
+          +  && apt install -y --no-install-recommends gcc libc6-dev patch \
              && apt-get -qyy remove openjdk-11-jre-headless \
              && apt-get -qyy autoremove \
              && apt-get -qyy clean \
@@ -43,7 +44,7 @@ jobs:
              && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
            
            # Update entrypoint
-          @@ -33,7 +40,7 @@
+          @@ -33,7 +41,7 @@
            COPY docker/background.png /usr/share/images/fluxbox/ubuntu-light.png
            
            # Add user, fix permissions
@@ -52,7 +53,7 @@ jobs:
            
            # Switch user
            USER $SEL_UID
-          @@ -44,10 +51,16 @@
+          @@ -44,10 +52,16 @@
            # Copy the project'\''s requirements file into the container.
            COPY requirements.txt $G4F_DIR
            
