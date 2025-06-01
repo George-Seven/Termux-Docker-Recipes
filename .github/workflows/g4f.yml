@@ -26,10 +26,11 @@ jobs:
            
            # Install Python3, pip, remove OpenJDK 11, clean up
            RUN apt-get -qqy update \
+          -  && apt-get -qqy upgrade \
           +  && dpkg-divert --remove /lib32 \
           +  && dpkg-divert --remove /libo32 \
           +  && dpkg-divert --remove /lib64 \
-             && apt-get -qqy upgrade \
+          +  && yes | apt-get -qqy upgrade \
              && apt-get -qyy autoremove \
              && apt-get -qqy install python3 python-is-python3 pip \
              && apt-get -qyy remove openjdk-11-jre-headless \
@@ -58,7 +59,7 @@ jobs:
           +
            # Upgrade pip for the latest features and install the project'\''s Python dependencies.
           -RUN pip install --break-system-packages --upgrade pip \
-          +RUN pip install --break-system-packages --upgrade pip supervisor \
+          +RUN pip install --break-system-packages --upgrade pip supervisor websockify \
              && pip install --break-system-packages -r requirements.txt
            
           +# Switch user
