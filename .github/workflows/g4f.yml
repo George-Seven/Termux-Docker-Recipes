@@ -38,7 +38,7 @@ jobs:
              && apt-get -qyy clean \
           +  && python3 -m ensurepip --upgrade \
           +  && python3 -m pip install --no-cache-dir --upgrade pip setuptools \
-          +  && sed -i 's/xvfb-run/xvfb-run -a/' /opt/bin/start-xvfb.sh \
+          +  && sed -i 's|/usr/bin/xvfb-run|/usr/bin/xvfb-run -a|' /opt/bin/start-xvfb.sh \
              && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
            
            # Update entrypoint
