@@ -22,7 +22,7 @@ jobs:
            
            ARG G4F_VERSION
            ENV G4F_VERSION $G4F_VERSION
-          @@ -17,12 +17,18 @@
+          @@ -17,12 +17,19 @@
            
            # Install Python3, pip, remove OpenJDK 11, clean up
            RUN apt-get -qqy update \
@@ -38,11 +38,12 @@ jobs:
              && apt-get -qyy clean \
           +  && python3 -m ensurepip --upgrade \
           +  && python3 -m pip install --no-cache-dir --upgrade pip setuptools \
-          +  && sed -i 's|/usr/bin/xvfb-run|/usr/bin/xvfb-run -a|' /opt/bin/start-xvfb.sh \
+          +  && sed -i "s|/usr/bin/xvfb-run|/usr/bin/xvfb-run -a|g" /opt/bin/start-xvfb.sh \
+          +  && sed -i "s|x11vnc|x11vnc -noshm|g" /opt/bin/start-vnc.sh \
              && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
            
            # Update entrypoint
-          @@ -33,7 +39,7 @@
+          @@ -33,7 +40,7 @@
            COPY docker/background.png /usr/share/images/fluxbox/ubuntu-light.png
            
            # Add user, fix permissions
@@ -51,7 +52,7 @@ jobs:
            
            # Switch user
            USER $SEL_UID
-          @@ -44,10 +50,16 @@
+          @@ -44,10 +51,16 @@
            # Copy the project'\''s requirements file into the container.
            COPY requirements.txt $G4F_DIR
            
